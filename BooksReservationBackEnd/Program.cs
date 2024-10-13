@@ -1,5 +1,6 @@
 using BooksReservationBackEnd.DB;
 using Microsoft.EntityFrameworkCore;
+using BooksReservationBackEnd.Service;
 
 namespace BooksReservationBackEnd
 {
@@ -14,6 +15,7 @@ namespace BooksReservationBackEnd
             builder.Services.AddControllers();
 
             builder.Services.AddDbContext<AppDB>(options => options.UseInMemoryDatabase("Library"));
+            builder.Services.AddScoped<ReserveCalc>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
