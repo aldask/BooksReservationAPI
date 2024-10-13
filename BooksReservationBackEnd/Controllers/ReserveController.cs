@@ -18,7 +18,7 @@ namespace BooksReservationBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("calc/{itemId}")]
         public async Task<ActionResult<decimal>> CalculateReservation(int id, [FromBody] Reservation request)
         {
             if (request == null || !request.IsValid())
@@ -43,7 +43,28 @@ namespace BooksReservationBackEnd.Controllers
                 totalCost = _reserveCalc.ReserveSumCalc(false, request.Duration, request.QuickPick);
             }
 
+            var reservation = new Reservation
+            {
+                Id = request.Id,
+                Duration = request.Duration,
+                QuickPick = request.QuickPick,
+                Price = request.Price,
+            };
+
+            _context.Reservations.Add(reservation);
+            await _context.SaveChangesAsync();
+
             return totalCost;
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Reservation>> GetReservation(int id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return reservation;
         }
     }
 }
