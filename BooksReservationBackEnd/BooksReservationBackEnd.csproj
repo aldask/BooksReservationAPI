@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <Compile Remove="Properties\NewFolder\**" />
+    <Content Remove="NewFolder\**" />
+    <Content Remove="Properties\NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Properties\NewFolder\**" />
+    <None Remove="NewFolder\**" />
+    <None Remove="Properties\NewFolder\**" />
+    <_WebToolingArtifacts Remove="Properties\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
