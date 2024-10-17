@@ -18,12 +18,12 @@ namespace BooksReservationBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("calc/{itemId}")]
+        [HttpPost("calc/{id}")]
         public async Task<ActionResult<decimal>> CalculateReservation(int id, [FromBody] Reservation request)
         {
-            if (request == null || !request.IsValid())
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid reservation data");
+                return BadRequest(ModelState);
             }
 
             var item = await _context.Items.FindAsync(id);
@@ -32,23 +32,17 @@ namespace BooksReservationBackEnd.Controllers
                 return NotFound("Item not found");
             }
 
-            decimal totalCost = 0;
-
-            if (item.IsBook)
-            {
-                totalCost = _reserveCalc.ReserveSumCalc(true, request.Duration, request.QuickPick);
-            }
-            else if (item.IsAudiobook)
-            {
-                totalCost = _reserveCalc.ReserveSumCalc(false, request.Duration, request.QuickPick);
-            }
+            decimal totalCost = item.IsBook
+                ? _reserveCalc.ReserveSumCalc(true, request.Duration, request.QuickPick)
+                : _reserveCalc.ReserveSumCalc(false, request.Duration, request.QuickPick);
 
             var reservation = new Reservation
             {
-                Id = request.Id,
+                ItemNo = id,     
                 Duration = request.Duration,
                 QuickPick = request.QuickPick,
-                Price = request.Price,
+                Price = totalCost,
+                IsBook = request.IsBook
             };
 
             _context.Reservations.Add(reservation);
@@ -56,15 +50,12 @@ namespace BooksReservationBackEnd.Controllers
 
             return totalCost;
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(int id)
+
+        [HttpGet("allreservations")]
+        public ActionResult<List<Reservation>> GetCurrentReservations()
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-            return reservation;
+            var reservations = _context.Reservations.ToList();
+            return Ok(reservations);
         }
     }
 }
