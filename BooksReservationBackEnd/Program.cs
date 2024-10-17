@@ -1,5 +1,6 @@
 using BooksReservationBackEnd.DB;
 using Microsoft.EntityFrameworkCore;
+using BooksReservationBackEnd.Service;
 
 namespace BooksReservationBackEnd
 {
@@ -14,6 +15,18 @@ namespace BooksReservationBackEnd
             builder.Services.AddControllers();
 
             builder.Services.AddDbContext<AppDB>(options => options.UseInMemoryDatabase("Library"));
+            builder.Services.AddScoped<ReserveCalc>();
+
+            //Cors config
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -29,10 +42,8 @@ namespace BooksReservationBackEnd
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAllOrigins");
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             InitializeDatabase(app);

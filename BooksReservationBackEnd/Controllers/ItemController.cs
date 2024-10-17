@@ -21,5 +21,17 @@ namespace BooksReservationBackEnd.Controllers
         {
             return await _context.Items.ToListAsync();
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Item>> GetItem(int id)
+        {
+            var item = await _context.Items.FindAsync(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return item;
+        }
     }
 }

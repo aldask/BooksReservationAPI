@@ -7,9 +7,9 @@
         private const decimal Fee = 3.0m;
         private const decimal QuickPickFee = 5.0m;
 
-        public decimal ReserveSumCalc(string type, int days, bool quickPick)
+        public decimal ReserveSumCalc(bool isBook, int days, bool quickPick)
         {
-            decimal dailyPrice = type == "Book" ? ItemPriceForDay : AudioBookPriceForDay;
+            decimal dailyPrice = isBook ? ItemPriceForDay : AudioBookPriceForDay;
 
             decimal basePrice = dailyPrice * days;
 
@@ -23,7 +23,7 @@
                 discount = basePrice * 0.10m;
             }
 
-            decimal totalPrice = basePrice - 0.10m + Fee;
+            decimal totalPrice = basePrice - discount + Fee;
 
             if (quickPick)
             {
